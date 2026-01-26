@@ -1,4 +1,5 @@
 Dataset/
 *.csv
-*.pdf
 *.zip
+*.pdf
+myvenv/
