@@ -1,0 +1,246 @@
+import streamlit as st
+import requests
+import pandas as pd
+from datetime import date
+import plotly.express as px
+
+#API_URL = "http://localhost:8000/predict"
+import os
+API_URL = os.getenv("API_URL", "http://localhost:8000/predict")
+
+# --------------------------------------------------
+# Page config
+# --------------------------------------------------
+st.set_page_config(
+    page_title="MedOptix Forecast",
+    page_icon="🩺",
+    layout="wide"
+)
+
+st.markdown(
+    """
+    <style>
+        .main { padding-top: 1rem; }
+        .stButton > button {
+            width: 100%;
+            border-radius: 8px;
+            height: 3rem;
+            font-size: 1.1rem;
+        }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+# --------------------------------------------------
+# Sidebar
+# --------------------------------------------------
+st.sidebar.title("⚙ Settings")
+st.sidebar.markdown("Configure forecasting options.")
+
+steps = st.sidebar.slider("Forecast horizon (days)", 1, 30, 7)
+start_date = st.sidebar.date_input("Forecast start date", value=date.today())
+
+st.sidebar.markdown("---")
+st.sidebar.caption("MedOptix Analytics © 2025")
+
+st.sidebar.markdown("### 🔮 Scenario assumptions")
+
+occupancy_trend = st.sidebar.slider(
+    "Daily occupancy change",
+    min_value=-0.05,
+    max_value=0.05,
+    value=0.01,
+    step=0.005,
+)
+
+overflow_trend = st.sidebar.slider(
+    "Daily overflow change (patients)",
+    min_value=-10,
+    max_value=20,
+    value=2,
+    step=1,
+)
+
+staffing_trend = st.sidebar.slider(
+    "Daily staffing change",
+    min_value=-0.05,
+    max_value=0.05,
+    value=0.0,
+    step=0.005,
+)
+
+
+# --------------------------------------------------
+# Main UI
+# --------------------------------------------------
+st.title("🩺 MedOptix Admissions Forecast")
+st.markdown(
+    "Predict hospital admissions using operational context and ward-level features."
+)
+
+st.markdown("### 🔧 Input Data")
+
+with st.form("prediction_form", border=True):
+
+    col1, col2 = st.columns(2)
+    with col1:
+        hospital = st.selectbox(
+            "Hospital",
+            [
+                "Helsinki Central Hospital",
+                "Tampere City Hospital",
+                "Turku University Hospital",
+                "Oulu Regional Hospital",
+                "Kuopio Medical Center",
+            ],
+        )
+    with col2:
+        ward_code = st.selectbox("Ward", ["ED", "ICU", "MED", "SURG"])
+
+    st.markdown("### 🧮 Operational Indicators (Lagged Features)")
+
+    c1, c2, c3 = st.columns(3)
+    with c1:
+        occupancy_rate_lag1 = st.number_input(
+            "Occupancy rate (yesterday)",
+            value=0.60,
+            min_value=0.0,
+            max_value=1.0,
+            step=0.01,
+        )
+    with c2:
+        overflow_lag1 = st.number_input(
+            "Overflow patients (yesterday)",
+            value=42.0,
+            step=1.0,
+        )
+    with c3:
+        avg_wait_minutes_lag1 = st.number_input(
+            "Average wait time (mins, yesterday)",
+            value=227.0,
+            step=1.0,
+        )
+
+    st.markdown("### 🛏 Capacity & Staffing")
+
+    colA, colB, colC = st.columns(3)
+    with colA:
+        base_beds = st.number_input("Base beds", value=30, step=1)
+    with colB:
+        effective_capacity = st.number_input(
+            "Effective capacity", value=34, step=1
+        )
+    with colC:
+        staffing_index = st.number_input("Staffing index", value=0.927)
+
+    st.markdown("---")
+    submitted = st.form_submit_button("🚀 Run Forecast")
+
+# --------------------------------------------------
+# API Call + Results
+# --------------------------------------------------
+if submitted:
+
+    features = {
+        #"hospital": hospital,
+        #"ward": ward_code,
+        "occupancy_rate_lag1": occupancy_rate_lag1,
+        "overflow_lag1": overflow_lag1,
+        "avg_wait_minutes_lag1": avg_wait_minutes_lag1,
+        "base_beds": base_beds,
+        "effective_capacity": effective_capacity,
+        "staffing_index": staffing_index,
+    }
+
+    payload = {
+    "steps": steps,
+    "features": features,
+    "scenario": {
+        "occupancy_trend": occupancy_trend,
+        "overflow_trend": overflow_trend,
+        "staffing_trend": staffing_trend,
+    },
+}
+
+    with st.spinner("Generating forecast…"):
+        try:
+            response = requests.post(API_URL, json=payload)
+
+            if response.status_code == 200:
+                result = response.json()
+                forecast_values = result.get("predictions", [])
+
+                st.success("Forecast generated successfully! ✅")
+                st.markdown(
+                    f"## 📊 Forecast for **{hospital} — {ward_code}**"
+                )
+
+                if forecast_values:
+                    dates = pd.date_range(
+                        start=start_date, periods=len(forecast_values)
+                    )
+
+                    df = pd.DataFrame(
+                        {
+                            "Date": dates,
+                            "Admissions forecast": forecast_values,
+                        }
+                    )
+
+                    if len(forecast_values) == 1:
+                        st.markdown(
+                            "## 🧮 Predicted Admissions for Selected Day"
+                        )
+                        st.markdown(
+                            f"""
+                            <div style="
+                                background-color:#f0f2f6;
+                                padding:30px;
+                                border-radius:10px;
+                                text-align:center;
+                                margin-bottom:20px;
+                            ">
+                                <h1 style="font-size:64px; margin:0;">
+                                    {forecast_values[0]}
+                                </h1>
+                                <p style="font-size:20px; margin-top:10px;">
+                                    Admissions forecast for
+                                    <b>{dates[0].strftime("%Y-%m-%d")}</b>
+                                </p>
+                            </div>
+                            """,
+                            unsafe_allow_html=True,
+                        )
+                    else:
+                        st.markdown("### 📈 Multi-day Forecast Overview")
+
+                        fig = px.line(
+                            df,
+                            x="Date",
+                            y="Admissions forecast",
+                            markers=True,
+                            title="Admissions Forecast Over Time",
+                        )
+
+                        fig.update_layout(
+                            xaxis_title="Date",
+                            yaxis_title="Forecasted Admissions",
+                            template="plotly_white",
+                            height=450,
+                            hovermode="x unified",
+                        )
+
+                        st.plotly_chart(fig, use_container_width=True)
+                        st.dataframe(df, use_container_width=True)
+
+                else:
+                    st.warning("No forecast data returned from the API.")
+
+            else:
+                st.error(
+                    f"API error {response.status_code}: {response.text}"
+                )
+
+        except Exception as e:
+            st.error(f"Request failed: {e}")

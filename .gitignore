@@ -1,5 +1,9 @@
-Dataset/
+.env
+dataset/
 *.csv
 *.zip
 *.pdf
 myvenv/
+_pycache__/
+hgface_logincred.txt
+.vscode/

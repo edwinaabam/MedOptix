@@ -1,6 +1,25 @@
 numpy
 pandas
+statsmodels
 matplotlib
 scikit-learn
 seaborn
 ipykernel
+
+sqlalchemy
+pymysql
+python-dotenv
+requests
+
+mlflow
+pmdarima
+huggingface-hub
+plotly
+
+
+# terminologies/componenets of docker
+#- Docker Daemon / Docker Engine
+#- Docker Image
+#- Docker Container
+#- Docker Hub
+#- Docker Compose

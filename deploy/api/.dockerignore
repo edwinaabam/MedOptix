@@ -1,0 +1,27 @@
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Virtual environments
+venv/
+myvenv/
+
+# Environment / secrets
+.env
+
+# MLflow artifacts (never bake into images)
+mlruns/
+model/mlruns/
+
+# Jupyter / experiments
+.ipynb_checkpoints/
+notebooks/
+
+# Git
+.git/
+.gitignore
+
+# OS junk
+.DS_Store
+Thumbs.db

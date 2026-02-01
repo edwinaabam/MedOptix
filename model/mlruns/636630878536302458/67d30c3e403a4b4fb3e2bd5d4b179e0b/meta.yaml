@@ -1,0 +1,14 @@
+artifact_uri: file:c:/Users/Edwina/Documents/Amdari_files/ds_projects/MedOptix/model/mlruns/636630878536302458/67d30c3e403a4b4fb3e2bd5d4b179e0b/artifacts
+end_time: 1769396114268
+entry_point_name: ''
+experiment_id: '636630878536302458'
+lifecycle_stage: active
+run_id: 67d30c3e403a4b4fb3e2bd5d4b179e0b
+run_name: SARIMAX model
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1769396110290
+status: 3
+tags: []
+user_id: Edwina
