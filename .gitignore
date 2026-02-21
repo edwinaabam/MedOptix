@@ -1,5 +1,5 @@
 .env
-dataset/
+#dataset/
 *.zip
 *.pdf
 myvenv/
@@ -8,6 +8,6 @@ hgface_logincred.txt
 .vscode/
 
 # Ignore all CSVs except cleaned_data.csv
-DataCleaning/*.csv
+!DataCleaning/*.csv
 !DataCleaning/cleaned_data.csv
 !assets/cleaned_data.csv

@@ -1,0 +1,21 @@
+hospital_id,ward_id,ward_code,ward_name,base_beds
+1,01-ED,ED,Emergency Department,30
+1,01-ICU,ICU,Intensive Care Unit,20
+1,01-MED,MED,General Medicine,50
+1,01-SURG,SURG,Surgery,40
+2,02-ED,ED,Emergency Department,30
+2,02-ICU,ICU,Intensive Care Unit,20
+2,02-MED,MED,General Medicine,50
+2,02-SURG,SURG,Surgery,40
+3,03-ED,ED,Emergency Department,30
+3,03-ICU,ICU,Intensive Care Unit,20
+3,03-MED,MED,General Medicine,50
+3,03-SURG,SURG,Surgery,40
+4,04-ED,ED,Emergency Department,30
+4,04-ICU,ICU,Intensive Care Unit,20
+4,04-MED,MED,General Medicine,50
+4,04-SURG,SURG,Surgery,40
+5,05-ED,ED,Emergency Department,30
+5,05-ICU,ICU,Intensive Care Unit,20
+5,05-MED,MED,General Medicine,50
+5,05-SURG,SURG,Surgery,40

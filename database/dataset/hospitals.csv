@@ -1,0 +1,6 @@
+hospital_id,hospital_name,city,country,latitude,longitude,founded_year
+1,Helsinki Central Hospital,Helsinki,Finland,63.6698,25.0721,1979
+2,Tampere City Hospital,Tampere,Finland,63.2868,22.6592,2008
+3,Turku University Hospital,Turku,Finland,64.6781,27.328,1998
+4,Oulu Regional Hospital,Oulu,Finland,60.4406,25.1527,2003
+5,Kuopio Medical Center,Kuopio,Finland,61.654,28.4874,2003
