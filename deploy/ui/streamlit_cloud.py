@@ -17,7 +17,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Custom CSS to eliminate whitespace while keeping the banner visible
+# Custom CSS to eliminate whitespace, keep banner visible, and change selection color
 st.markdown("""
 <style>
 .main { background:#f7f9fc; }
@@ -42,6 +42,18 @@ st.markdown("""
 }
 div[data-testid="stMetricValue"] { font-size: 1.4rem !important; }
 div[data-testid="stMetricDelta"] { font-size: 0.8rem !important; }
+
+/* Change Streamlit's default red multiselect tags to blue */
+span[data-baseweb="tag"] {
+    background-color: #1f4fd8 !important;
+}
+span[data-baseweb="tag"] span {
+    color: white !important;
+}
+/* Change the 'x' clear button on the tag to white */
+span[data-baseweb="tag"] svg {
+    fill: white !important;
+}
 </style>
 """, unsafe_allow_html=True)
 
@@ -116,7 +128,7 @@ with tab_dash:
         if not selected_hospitals or not selected_years:
             st.warning("⚠️ Please select at least one Hospital and one Year from the sidebar to view data.")
         else:
-            # ---- FILTER DATA (Using .isin() for multiple selections) ----
+            # ---- FILTER DATA ----
             yf = df[df["hospital_name"].isin(selected_hospitals) & df["year"].isin(selected_years)]
 
             if yf.empty:
@@ -129,7 +141,6 @@ with tab_dash:
                 staffing_value = yf["staffing_index"].mean()
                 staffing_status = "Understaffed" if staffing_value < 0.95 else "Overstaffed" if staffing_value > 1.05 else "Adequate"
 
-                # Formatting year string for the metric title
                 year_label = f"{len(selected_years)} Years" if len(selected_years) > 2 else ", ".join(map(str, selected_years))
 
                 # ---- EXECUTIVE METRICS (TOP ROW) ----
@@ -149,7 +160,6 @@ with tab_dash:
                 # Row 1
                 r1c1, r1c2, r1c3 = st.columns(3)
                 
-                # 1. Admissions Trend
                 with r1c1:
                     monthly = yf.groupby(pd.Grouper(key="date", freq="ME"))["admissions"].sum().reset_index()
                     fig_month = px.line(monthly, x="date", y="admissions", markers=True, height=CHART_HEIGHT, color_discrete_sequence=["#1f4fd8"])
@@ -157,7 +167,6 @@ with tab_dash:
                     fig_month.update_xaxes(tickformat="%b", dtick="M1")
                     st.plotly_chart(fig_month, use_container_width=True)
 
-                # 2. Admissions by Ward
                 with r1c2:
                     ward_bar = yf.groupby("ward_code")["admissions"].sum().reset_index()
                     ward_bar["label"] = ward_bar["admissions"].apply(lambda x: f"{int(x/1000)}k")
@@ -166,7 +175,6 @@ with tab_dash:
                     fig_ward.update_traces(textposition="outside")
                     st.plotly_chart(fig_ward, use_container_width=True)
 
-                # 3. Capacity vs Occupancy
                 with r1c3:
                     cap_df = yf.copy()
                     cap_df["month_num"] = cap_df["date"].dt.month
@@ -185,7 +193,6 @@ with tab_dash:
                 # Row 2
                 r2c1, r2c2, r2c3 = st.columns(3)
 
-                # 4. Arrival Source Distribution (Tied to Sidebar Ward Select)
                 with r2c1:
                     if not selected_wards:
                         st.info("⚠️ Select a ward from the sidebar to view arrivals.")
@@ -203,7 +210,6 @@ with tab_dash:
                         else:
                             st.info("No arrival data for selected wards.")
 
-                # 5. Wait Time by Age Group
                 with r2c2:
                     age_df = yf.copy()
                     age_df["age_band"] = pd.cut(age_df["age"], bins=[0, 39, 59, 120], labels=["20–39", "40–59", "60+"])
@@ -212,7 +218,6 @@ with tab_dash:
                     fig_age.update_layout(title="Triage Wait by Age", margin=MARGINS, showlegend=False, xaxis_title="", yaxis_title="Mins")
                     st.plotly_chart(fig_age, use_container_width=True)
 
-                # 6. Wait Time by Outcome
                 with r2c3:
                     outcomes = {"Discharged": "outcome_discharged", "Readmitted": "outcome_readmit_30d", "Transferred": "outcome_transferred", "Death": "outcome_death"}
                     rows = [{"Outcome": label, "Avg Wait": yf[yf[col] == 1]["wait_per_triage"].mean()} for label, col in outcomes.items() if col in yf.columns and len(yf[yf[col] == 1]) > 0]
@@ -231,7 +236,6 @@ with tab_dash:
 with tab_fore:
     st.subheader("Admission Forecasting Tool")
     
-    # Keep controls horizontal
     fc1, fc2, fc3, fc4, fc5, fc6, fc7 = st.columns(7)
     with fc1: steps = st.slider("Horizon", 1, 30, 7)
     with fc2: occ = st.number_input("Occupancy", 0.0, 1.0, 0.6)
@@ -244,7 +248,6 @@ with tab_fore:
     run_forecast = st.button("🚀 Run Forecast", type="primary")
 
     if run_forecast:
-        # --- MOCK PREDICTION LOGIC ---
         base_value = beds + (waitlag * 0.1) + over - (cap * 0.5)
         preds = [round(max(0, base_value + random.uniform(-5.0, 5.0)), 2) for _ in range(steps)]
         
