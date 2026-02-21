@@ -8,7 +8,7 @@ from datetime import date
 # --------------------------------------------------
 # CONFIG & CSS FOR COMPACT "NO-SCROLL" LAYOUT
 # --------------------------------------------------
-DATA_PATH = Path("assets/cleaned_data.csv")
+DATA_PATH = Path("DataCleaning/cleaned_data.csv")
 
 st.set_page_config(
     page_title="MedOptix Analytics | The HealInsight Initiative",
