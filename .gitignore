@@ -8,5 +8,5 @@ hgface_logincred.txt
 .vscode/
 
 # Ignore all CSVs except cleaned_data.csv
-*.csv
-!ui/assets/cleaned_data.csv
+DataCleaning/*.csv
+!assets/cleaned_data.csv
