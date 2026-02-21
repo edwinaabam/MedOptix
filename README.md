@@ -93,7 +93,7 @@ These results demonstrate the potential of predictive analytics to improve hospi
 - **SQL** (data querying and integration)  
 - **MLflow** (experiment tracking and model registry)  
 - **Docker** (deployment and portability)  
-- **Power BI** (visual analytics and dashboards)  
+ 
 
 ---
 
