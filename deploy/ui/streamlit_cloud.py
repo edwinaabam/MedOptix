@@ -101,6 +101,11 @@ if not df.empty:
 # SIDEBAR (MULTI-SELECT CONTROLS)
 # --------------------------------------------------
 with st.sidebar:
+    # Safely load the image if it exists
+    img_path = Path("assets/dashpic.png")
+    if img_path.exists():
+        st.image(str(img_path), use_container_width=True)
+    
     st.markdown("### 🎛️ Controls")
     
     if not df.empty:
