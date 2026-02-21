@@ -9,4 +9,5 @@ hgface_logincred.txt
 
 # Ignore all CSVs except cleaned_data.csv
 DataCleaning/*.csv
+!DataCleaning/cleaned_data.csv
 !assets/cleaned_data.csv
