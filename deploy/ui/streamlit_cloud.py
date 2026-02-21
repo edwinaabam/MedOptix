@@ -20,7 +20,7 @@ st.set_page_config(
 # Custom CSS to eliminate whitespace, keep banner visible, and change selection color
 st.markdown("""
 <style>
-.main { background:#62b6cb; }
+.main { background:#f7f9fc; }
 .block-container { 
     padding-top: 2rem !important; 
     padding-bottom: 1rem !important; 
@@ -29,7 +29,7 @@ st.markdown("""
 .main-header {
     text-align: center;
     padding: 15px 0;
-    background: linear-gradient(90deg, #1f4fd8, #4fa3ff);
+    background: #62b6cb;   /* ✅ Changed banner color */
     color: white;
     border-radius: 8px;
     margin-bottom: 20px;
@@ -50,13 +50,11 @@ span[data-baseweb="tag"] {
 span[data-baseweb="tag"] span {
     color: white !important;
 }
-/* Change the 'x' clear button on the tag to white */
 span[data-baseweb="tag"] svg {
     fill: white !important;
 }
 </style>
 """, unsafe_allow_html=True)
-
 # --------------------------------------------------
 # VISUAL BANNER
 # --------------------------------------------------
