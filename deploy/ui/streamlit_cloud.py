@@ -102,7 +102,7 @@ if not df.empty:
 # --------------------------------------------------
 with st.sidebar:
     # Safely load the image if it exists
-    img_path = Path("ui/assets/dashpic.png")
+    img_path = Path("deploy/ui/assets/dashpic.png")
     if img_path.exists():
         st.image(str(img_path), use_container_width=True)
     
