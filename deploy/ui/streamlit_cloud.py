@@ -20,7 +20,7 @@ st.set_page_config(
 # Custom CSS to eliminate whitespace, keep banner visible, and change selection color
 st.markdown("""
 <style>
-.main { background:#f7f9fc; }
+.main { background:#62b6cb; }
 .block-container { 
     padding-top: 2rem !important; 
     padding-bottom: 1rem !important; 
@@ -29,7 +29,7 @@ st.markdown("""
 .main-header {
     text-align: center;
     padding: 15px 0;
-    background: linear-gradient(62b6cb);
+    background: linear-gradient(90deg, #1f4fd8, #4fa3ff);
     color: white;
     border-radius: 8px;
     margin-bottom: 20px;
