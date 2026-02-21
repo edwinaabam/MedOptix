@@ -45,7 +45,7 @@ div[data-testid="stMetricDelta"] { font-size: 0.8rem !important; }
 
 /* Change Streamlit's default red multiselect tags to blue */
 span[data-baseweb="tag"] {
-    background-color: #1f4fd8 !important;
+    background-color: #62b6cb !important;
 }
 span[data-baseweb="tag"] span {
     color: white !important;
